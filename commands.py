@@ -8,13 +8,17 @@ new_game = False
 # Функция, которая выполняет вычитание конфет в ход бота
 async def bot_turn(message):
     global total
+    global new_game
     if total > 28:
         take = random.randint(1,28)
     else:
         take = total
     total -= take
     await bot.send_message(message.from_user.id,f'Бот взял со стола {take} конфет. На столе осталось {total} конфет')
-
+    if total == 0:
+        await bot.send_message(message.from_user.id,'Бот победил')
+        await dp.wait_closed()
+        await bot.close()
 
 async def player_turn(message):
     name = message.from_user.first_name
@@ -42,10 +46,14 @@ async def start_bot(message: types.Message): #Объект класса Месс
                 await bot.send_message(message.from_user.id,
                                         f'{name} взял со стола {text} конфет. На столе осталось {total}')
             else:
-                await message.reply(f'{message.from_user.first_name} да ты жадина! Нужно брать  до 29 конфет')  
+                await message.reply(f'{message.from_user.first_name} ты кретин?! Нужно брать от 1  до 29 конфет')  
         else:    
             await bot.send_message(message.from_user.id,
                                         f'{name} напиши сколько ты хочешь взять конфет цифрами, а не вот это вот всё!')
+        if total == 0:
+            await bot.send_message(message.from_user.id, 'Ты победил')
+            await dp.wait_closed()
+            await bot.close()      
     await bot_turn(message)
     await player_turn(message)
 
