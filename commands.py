@@ -24,7 +24,6 @@ async def player_turn(message):
     name = message.from_user.first_name
     await bot.send_message(message.from_user.id, f'{name} , твой черёд.')
     
-
 #Декоратор, изменяет поведение функции не изменяя функции
 @dp.message_handler(commands=['start'])
 async def start_bot(message: types.Message):
